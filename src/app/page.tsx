@@ -14,25 +14,25 @@ export default async function HomePage() {
       {/* HERO */}
       <section className="hero">
         <div className="hero-left">
-          <span className="eyebrow on-dark reveal is-visible">Non-Alcoholic Oil Attars — Est. Dhaka</span>
-          <h1 className="reveal is-visible" style={{ transitionDelay: '.1s' }}>
+          <span className="eyebrow on-dark reveal">Non-Alcoholic Oil Attars — Est. Dhaka</span>
+          <h1 className="reveal" style={{ transitionDelay: '.1s' }}>
             Scent that sits<br/>on the skin,<br/><em>not the air.</em>
           </h1>
-          <p className="reveal is-visible" style={{ transitionDelay: '.2s' }}>
+          <p className="reveal" style={{ transitionDelay: '.2s' }}>
             Oud, saffron and rose distilled the old way — no ethanol, no rush. Each vial rests forty days in dark glass before it reaches a shelf.
           </p>
-          <Link href="/collection" className="btn-gold reveal is-visible" style={{ transitionDelay: '.3s', alignSelf: 'flex-start' }}>
+          <Link href="/collection" className="btn-gold reveal" style={{ transitionDelay: '.3s', alignSelf: 'flex-start' }}>
             Enter the Collection →
           </Link>
         </div>
         <div className="hero-right">
-          <div className="hero-meta reveal is-visible" style={{ transitionDelay: '.2s' }}>
+          <div className="hero-meta reveal" style={{ transitionDelay: '.2s' }}>
             <div className="hero-meta-row"><span>Origin</span><span>Cambodia · Kashmir · Taif</span></div>
             <div className="hero-meta-row"><span>Format</span><span>Pure oil, no carrier alcohol</span></div>
             <div className="hero-meta-row"><span>Batch</span><span>Aged 40+ days, dark glass</span></div>
             <div className="hero-meta-row"><span>Shipping</span><span>Dhaka, nationwide 5–9 days</span></div>
           </div>
-          <div className="hero-vial-wrap reveal is-visible" style={{ transitionDelay: '.3s' }}>
+          <div className="hero-vial-wrap reveal" style={{ transitionDelay: '.3s' }}>
             <div className="vial"></div>
             <div>
               <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '18px' }}>Dahn al Oud</div>
@@ -44,11 +44,11 @@ export default async function HomePage() {
       
       {/* ASYMMETRIC COLLECTION GRID */}
       <section className="section wrap border-box">
-        <div className="section-head reveal is-visible">
+        <div className="section-head reveal">
           <h2>The Index</h2>
           <p>An initial offering of pure parfum oils. Highly concentrated, meant to be worn intimately.</p>
         </div>
-        <div className="asym-grid reveal is-visible">
+        <div className="asym-grid reveal">
             {indexProducts.map((p, i) => {
               const hasImage = p.images && p.images.length > 0;
               const imageUrl = hasImage ? p.images[0].blob_url : null;

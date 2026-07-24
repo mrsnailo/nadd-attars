@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createProduct, updateProduct, uploadImage, ProductInput } from '@/actions/admin'
 
-export default function ProductForm({ initialData }: { initialData?: unknown }) {
+export default function ProductForm({ initialData }: { initialData?: any }) { // eslint-disable-line @typescript-eslint/no-explicit-any
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const isEditing = !!initialData
@@ -62,7 +62,7 @@ export default function ProductForm({ initialData }: { initialData?: unknown }) 
         ...formData,
         price: formData.price, // Prisma handles string/number correctly via conversion when mapped in API? Wait, the Prisma generated type for Decimal requires a number, string, or Decimal instance.
         images
-      } as unknown
+      } as unknown as ProductInput
 
       if (isEditing) {
         await updateProduct(initialData.id, payload)
