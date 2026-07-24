@@ -1,6 +1,14 @@
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
+import { getProducts } from "@/lib/db";
+import Image from "next/image";
 
-export default function HomePage() {
+const BLUR_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=";
+
+export default async function HomePage() {
+  const products = await getProducts();
+  const indexProducts = products.slice(0, 4); // Limit for the index
+
   return (
     <>
       {/* HERO */}
@@ -41,30 +49,41 @@ export default function HomePage() {
           <p>An initial offering of pure parfum oils. Highly concentrated, meant to be worn intimately.</p>
         </div>
         <div className="asym-grid reveal is-visible">
-            <Link href="/product/dahn-al-oud" className="prod-card wide">
-              <div className="prod-eyebrow">Oud</div>
-              <div className="prod-vial-row"><div className="vial"></div></div>
-              <div>
-                <h3>Dahn al Oud</h3>
-                <div className="prod-notes">Fine Attar / 3ml</div>
-                <div className="prod-foot">
-                  <span className="price">USD 120</span>
-                  <div className="prod-arrow">↗</div>
-                </div>
-              </div>
-            </Link>
-            <Link href="/product/amber-rose" className="prod-card">
-              <div className="prod-eyebrow">Floral</div>
-              <div className="prod-vial-row"><div className="vial"></div></div>
-              <div>
-                <h3>Amber & Rose</h3>
-                <div className="prod-notes">Fine Attar / 3ml</div>
-                <div className="prod-foot">
-                  <span className="price">USD 85</span>
-                  <div className="prod-arrow">↗</div>
-                </div>
-              </div>
-            </Link>
+            {indexProducts.map((p, i) => {
+              const hasImage = p.images && p.images.length > 0;
+              const imageUrl = hasImage ? p.images[0].blob_url : null;
+              const altText = hasImage ? (p.images[0].alt_text || p.name) : p.name;
+              
+              return (
+                <Link href={`/product/${p.slug}`} className={`prod-card ${i === 0 ? 'wide' : ''}`} key={p.id}>
+                  <div className="prod-eyebrow">{p.family}</div>
+                  <div className="prod-vial-row" style={{ position: 'relative' }}>
+                    {imageUrl ? (
+                      <div style={{ position: 'relative', width: '56px', height: '104px' }}>
+                         <Image 
+                           src={imageUrl} 
+                           alt={altText} 
+                           fill
+                           style={{ objectFit: 'contain' }}
+                           placeholder="blur"
+                           blurDataURL={BLUR_URL}
+                         />
+                      </div>
+                    ) : (
+                      <div className="vial"></div>
+                    )}
+                  </div>
+                  <div>
+                    <h3>{p.name}</h3>
+                    <div className="prod-notes">Fine Attar / {p.size}</div>
+                    <div className="prod-foot">
+                      <span className="price">{p.currency} {p.price}</span>
+                      <div className="prod-arrow">↗</div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
         </div>
       </section>
     </>
