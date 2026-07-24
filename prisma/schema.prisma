@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id                       String          @id @default(cuid())
+  slug                     String          @unique
+  name                     String
+  price                    Decimal
+  currency                 String          @default("USD")
+  size                     String
+  family                   String
+  stock_count              Int             @default(0)
+  description              String?
+  subtitle                 String?
+  concentration            String?
+  origin                   String?
+  extraction               String?
+  batch_no                 String?
+  aged_time                String?
+  ingredients              String?
+  how_to_wear_instructions String?
+  shipping_rules           String?
+  created_at               DateTime        @default(now())
+
+  notes                    ProductNotes[]
+  metrics                  ProductMetrics?
+  images                   Images[]
+}
+
+model ProductNotes {
+  id          String  @id @default(cuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  time        String
+  tag         String
+  notes       String
+  description String
+}
+
+model ProductMetrics {
+  id        String  @id @default(cuid())
+  productId String  @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  longevity String
+  sillage   String
+  intensity String
+  best_in   String
+}
+
+model Images {
+  id            String  @id @default(cuid())
+  entity_type   String  // e.g. "product" or "homepage"
+  entity_id     String
+  productId     String?
+  product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  blob_url      String
+  display_order Int     @default(0)
+  alt_text      String?
+}
