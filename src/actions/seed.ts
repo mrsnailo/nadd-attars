@@ -1,15 +1,16 @@
 'use server'
 
 import { PrismaClient } from '@prisma/client'
-import { updateTag } from 'next/cache'
+import { updateTag, revalidatePath } from 'next/cache'
 
 const prisma = new PrismaClient()
 
-export async function seedDatabaseAction() {
+export async function seedDatabase() {
   const count = await prisma.product.count()
   
   if (count > 0) {
-    return { success: false, message: 'Database already populated' }
+    console.log('Database already populated')
+    return
   }
 
   // --- Product 1: Oud Sultan ---
@@ -143,5 +144,6 @@ export async function seedDatabaseAction() {
   })
 
   updateTag('products')
-  return { success: true, message: 'Database seeded successfully' }
+  revalidatePath('/admin')
+  revalidatePath('/')
 }
