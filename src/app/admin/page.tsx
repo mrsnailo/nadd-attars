@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { PrismaClient } from '@prisma/client'
 import Link from 'next/link'
+import { seedDatabase } from '@/actions/seed'
 
 const prisma = new PrismaClient()
 
@@ -14,9 +15,16 @@ export default async function AdminDashboard() {
     <div className="wrap" style={{ padding: '2rem 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1>Admin Dashboard</h1>
-        <Link href="/admin/new" style={{ padding: '0.5rem 1rem', background: '#D4AF37', color: '#fff', textDecoration: 'none' }}>
-          + New Product
-        </Link>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <form action={seedDatabase}>
+            <button type="submit" style={{ padding: '0.5rem 1rem', background: '#1c1c1e', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+              Seed DB
+            </button>
+          </form>
+          <Link href="/admin/new" style={{ padding: '0.5rem 1rem', background: '#D4AF37', color: '#fff', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+            + New Product
+          </Link>
+        </div>
       </div>
 
       <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
