@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import { ScrollObserver } from "@/components/ScrollObserver";
 
 export const metadata: Metadata = {
   title: "NAḎḎ — Attars & Oud, Dhaka",
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ScrollObserver />
         <header className="site-nav">
           <div className="nav-inner">
             <Link href="/" className="logo">NA<span>ḎḎ</span></Link>
