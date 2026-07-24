@@ -3,11 +3,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Seeding database with NADD Attars dummy data...')
+  console.log('Seeding database with NADD Attars dummy data via Prisma...')
 
-  // Clear existing data (optional, but good for idempotent seeds)
-  await prisma.product.deleteMany()
-  await prisma.images.deleteMany()
+  // Prevent aggressive deletions
+  const count = await prisma.product.count()
+  if (count > 0) {
+    console.log('Database already populated. Skipping seed.')
+    return
+  }
 
   // --- Product 1: Oud Sultan ---
   const p1 = await prisma.product.create({
@@ -44,16 +47,17 @@ async function main() {
           intensity: 'High',
           best_in: 'Winter / Night'
         }
-      },
-
-      images: {
-        create: [
-          { entity_type: 'product', entity_id: 'pending', blob_url: 'https://images.unsplash.com/photo-1608500218890-c4e1adfb7991?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Oud Sultan Bottle' },
-          { entity_type: 'product', entity_id: 'pending', blob_url: 'https://images.unsplash.com/photo-1629198688000-71f23e7456c7?q=80&w=600&auto=format&fit=crop', display_order: 2, alt_text: 'Oud Sultan Box' }
-        ]
       }
     }
   })
+
+  await prisma.images.createMany({
+    data: [
+      { productId: p1.id, entity_type: 'product', entity_id: p1.id, blob_url: 'https://images.unsplash.com/photo-1608500218890-c4e1adfb7991?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Oud Sultan Bottle' },
+      { productId: p1.id, entity_type: 'product', entity_id: p1.id, blob_url: 'https://images.unsplash.com/photo-1629198688000-71f23e7456c7?q=80&w=600&auto=format&fit=crop', display_order: 2, alt_text: 'Oud Sultan Box' }
+    ]
+  })
+
   console.log(`Created product: ${p1.name}`)
 
   // --- Product 2: Rose Taif ---
@@ -91,15 +95,16 @@ async function main() {
           intensity: 'Medium',
           best_in: 'Spring / Day'
         }
-      },
-
-      images: {
-        create: [
-          { entity_type: 'product', entity_id: 'pending',  blob_url: 'https://images.unsplash.com/photo-1615397323136-1e0e7a2b0cb0?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Rose Taifi Bottle' }
-        ]
       }
     }
   })
+
+  await prisma.images.createMany({
+    data: [
+      { productId: p2.id, entity_type: 'product', entity_id: p2.id,  blob_url: 'https://images.unsplash.com/photo-1615397323136-1e0e7a2b0cb0?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Rose Taifi Bottle' }
+    ]
+  })
+
   console.log(`Created product: ${p2.name}`)
 
   // --- Product 3: Amber Royale ---
@@ -137,15 +142,16 @@ async function main() {
           intensity: 'High',
           best_in: 'Autumn / Evening'
         }
-      },
-
-      images: {
-        create: [
-          { entity_type: 'product', entity_id: 'pending', blob_url: 'https://images.unsplash.com/photo-1595514535311-66774e1e7fdd?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Amber Royale Perfume' }
-        ]
       }
     }
   })
+
+  await prisma.images.createMany({
+    data: [
+      { productId: p3.id, entity_type: 'product', entity_id: p3.id, blob_url: 'https://images.unsplash.com/photo-1595514535311-66774e1e7fdd?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Amber Royale Perfume' }
+    ]
+  })
+
   console.log(`Created product: ${p3.name}`)
 
   console.log('Seeding finished.')
