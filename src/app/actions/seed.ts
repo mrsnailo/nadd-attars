@@ -1,7 +1,7 @@
 'use server'
 
 import { PrismaClient } from '@prisma/client'
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 const prisma = new PrismaClient()
 
@@ -142,6 +142,6 @@ export async function seedDatabaseAction() {
     ]
   })
 
-  revalidateTag('products')
+  updateTag('products')
   return { success: true, message: 'Database seeded successfully' }
 }
