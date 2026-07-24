@@ -1,7 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-import { orderUpdateSchema, OrderUpdateInput } from '@/lib/validations'
+import { orderUpdateSchema, type OrderUpdateInput } from '@/lib/validations'
 import { requireAdmin } from '@/lib/auth-guard'
 
 export async function updateOrder(id: string, data: OrderUpdateInput) {

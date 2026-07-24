@@ -1,7 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-import { couponSchema, CouponInput } from '@/lib/validations'
+import { couponSchema, type CouponInput } from '@/lib/validations'
 import { requireAdmin } from '@/lib/auth-guard'
 
 export async function createCoupon(data: CouponInput) {

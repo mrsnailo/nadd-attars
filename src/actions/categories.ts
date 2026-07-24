@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma'
 import { updateTag } from 'next/cache'
-import { categorySchema, CategoryInput } from '@/lib/validations'
+import { categorySchema, type CategoryInput } from '@/lib/validations'
 import { requireAdmin } from '@/lib/auth-guard'
 
 export async function createCategory(data: CategoryInput) {

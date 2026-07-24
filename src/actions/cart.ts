@@ -1,7 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-import { checkoutSchema, CheckoutInput } from '@/lib/validations'
+import { checkoutSchema, type CheckoutInput } from '@/lib/validations'
 
 function generateOrderNumber(): string {
   const prefix = 'NADD'

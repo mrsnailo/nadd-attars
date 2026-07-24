@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma'
 import { updateTag } from 'next/cache'
-import { storeSettingsSchema, StoreSettingsInput } from '@/lib/validations'
+import { storeSettingsSchema, type StoreSettingsInput } from '@/lib/validations'
 import { requireAdmin } from '@/lib/auth-guard'
 
 export async function updateStoreSettings(data: StoreSettingsInput) {

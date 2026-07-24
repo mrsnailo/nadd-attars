@@ -4,7 +4,7 @@ import { Product } from '@prisma/client'
 import { put } from '@vercel/blob'
 import prisma from '@/lib/prisma'
 import { updateTag } from 'next/cache'
-import { productSchema, ProductInput } from '@/lib/validations'
+import { productSchema, type ProductInput } from '@/lib/validations'
 import { requireAdmin } from '@/lib/auth-guard'
 
 export type { ProductInput }
