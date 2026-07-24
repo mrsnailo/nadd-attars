@@ -1,15 +1,15 @@
+'use server'
+
 import { PrismaClient } from '@prisma/client'
+import { revalidateTag } from 'next/cache'
 
 const prisma = new PrismaClient()
 
-async function main() {
-  console.log('Seeding database with NADD Attars dummy data via Prisma...')
-
-  // Prevent aggressive deletions
+export async function seedDatabaseAction() {
   const count = await prisma.product.count()
+  
   if (count > 0) {
-    console.log('Database already populated. Skipping seed.')
-    return
+    return { success: false, message: 'Database already populated' }
   }
 
   // --- Product 1: Oud Sultan ---
@@ -31,7 +31,6 @@ async function main() {
       ingredients: '100% Pure Agarwood Oil',
       how_to_wear_instructions: 'Apply a single swipe to pulse points. Do not rub.',
       shipping_rules: 'Ships worldwide via DHL Express. Requires signature.',
-
       notes: {
         create: [
           { time: 'Opening', tag: 'Smoky', notes: 'Campfire, dark leather, raw earth', description: 'Starts with a bold, smoky profile that immediately commands attention.' },
@@ -39,7 +38,6 @@ async function main() {
           { time: 'Drydown', tag: 'Sweet', notes: 'Warm amber, soft musk, honeyed wood', description: 'Leaves a lingering, sweet woody warmth on the skin for hours.' }
         ]
       },
-
       metrics: {
         create: {
           longevity: '12+ Hours',
@@ -57,8 +55,6 @@ async function main() {
       { productId: p1.id, entity_type: 'product', entity_id: p1.id, blob_url: 'https://images.unsplash.com/photo-1629198688000-71f23e7456c7?q=80&w=600&auto=format&fit=crop', display_order: 2, alt_text: 'Oud Sultan Box' }
     ]
   })
-
-  console.log(`Created product: ${p1.name}`)
 
   // --- Product 2: Rose Taif ---
   const p2 = await prisma.product.create({
@@ -79,7 +75,6 @@ async function main() {
       ingredients: 'Pure Rosa Damascena Extract',
       how_to_wear_instructions: 'Apply lightly to wrists and neck.',
       shipping_rules: 'Ships worldwide.',
-
       notes: {
         create: [
           { time: 'Opening', tag: 'Fresh', notes: 'Dewy petals, green stems, sharp citrus', description: 'A burst of fresh, green rose that feels like a morning garden.' },
@@ -87,7 +82,6 @@ async function main() {
           { time: 'Drydown', tag: 'Powdery', notes: 'Soft musk, dried petals', description: 'Fades into a soft, romantic powdery finish.' }
         ]
       },
-
       metrics: {
         create: {
           longevity: '8 Hours',
@@ -104,8 +98,6 @@ async function main() {
       { productId: p2.id, entity_type: 'product', entity_id: p2.id,  blob_url: 'https://images.unsplash.com/photo-1615397323136-1e0e7a2b0cb0?q=80&w=600&auto=format&fit=crop', display_order: 1, alt_text: 'Rose Taifi Bottle' }
     ]
   })
-
-  console.log(`Created product: ${p2.name}`)
 
   // --- Product 3: Amber Royale ---
   const p3 = await prisma.product.create({
@@ -126,7 +118,6 @@ async function main() {
       ingredients: 'Labdanum, Vanilla Extract, Sandalwood Oil',
       how_to_wear_instructions: 'Suitable for daily wear anywhere on the body.',
       shipping_rules: 'Standard shipping globally.',
-
       notes: {
         create: [
           { time: 'Opening', tag: 'Sweet', notes: 'Vanilla, caramel, soft spice', description: 'Instantly warm and inviting.' },
@@ -134,7 +125,6 @@ async function main() {
           { time: 'Drydown', tag: 'Woody', notes: 'Sandalwood, rich musk', description: 'A smooth, satisfying, woody conclusion.' }
         ]
       },
-
       metrics: {
         create: {
           longevity: '10 Hours',
@@ -152,16 +142,6 @@ async function main() {
     ]
   })
 
-  console.log(`Created product: ${p3.name}`)
-
-  console.log('Seeding finished.')
+  revalidateTag('products')
+  return { success: true, message: 'Database seeded successfully' }
 }
-
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
