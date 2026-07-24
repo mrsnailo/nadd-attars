@@ -4,7 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && npx prisma db push --accept-data-loss && npx prisma db seed && next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
     "start": "next start",
     "lint": "eslint"
   },
@@ -15,7 +20,8 @@
     "next": "16.2.11",
     "next-auth": "^5.0.0-beta.32",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@prisma/client": "^5.22.0",

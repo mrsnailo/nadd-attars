@@ -1,61 +1,58 @@
 'use server'
 
-import { PrismaClient, Product } from '@prisma/client'
+import { Product } from '@prisma/client'
 import { put } from '@vercel/blob'
+import prisma from '@/lib/prisma'
+import { updateTag } from 'next/cache'
+import { productSchema, type ProductInput } from '@/lib/validations'
+import { requireAdmin } from '@/lib/auth-guard'
 
-// Use a singleton for Prisma to avoid exhausting connection limits in development
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
-const prisma = globalForPrisma.prisma || new PrismaClient()
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-
-export type ProductInput = Omit<Product, 'id' | 'created_at'> & {
-  notes?: { time: string; tag: string; notes: string; description: string }[]
-  metrics?: { longevity: string; sillage: string; intensity: string; best_in: string }
-  images?: { entity_type: string; entity_id?: string; blob_url: string; display_order: number; alt_text: string | null }[]
-}
+export type { ProductInput }
 
 export async function createProduct(data: ProductInput): Promise<Product> {
-  const { notes, metrics, images, ...productData } = data
+  const parsed = productSchema.parse(data)
+  const { notes, metrics, images, ...productData } = parsed
 
   const product = await prisma.product.create({
     data: {
       ...productData,
       notes: {
-        create: notes || []
+        create: notes || [],
       },
       metrics: metrics ? {
-        create: metrics
+        create: metrics,
       } : undefined,
       images: {
         create: (images || []).map(img => ({
           ...img,
           entity_type: img.entity_type || 'product',
-          entity_id: img.entity_id || 'pending' 
-        }))
-      }
+          entity_id: img.entity_id || 'pending',
+        })),
+      },
     },
     include: {
       notes: true,
       metrics: true,
       images: true,
-    }
+    },
   })
 
-  // Update images to have the correct entity_id if they were pending
   if (images && images.length > 0) {
     await prisma.images.updateMany({
       where: { productId: product.id, entity_id: 'pending' },
-      data: { entity_id: product.id }
+      data: { entity_id: product.id },
     })
   }
 
+  updateTag('products')
   return product
 }
 
 export async function updateProduct(id: string, data: Partial<ProductInput>): Promise<Product> {
-  const { notes, metrics, images, ...productData } = data
+  await requireAdmin()
+  const parsed = productSchema.partial().parse(data)
+  const { notes, metrics, images, ...productData } = parsed
 
-  // For simplicity in this MVP, we delete existing nested records and recreate them
   if (notes) {
     await prisma.productNotes.deleteMany({ where: { productId: id } })
   }
@@ -76,21 +73,54 @@ export async function updateProduct(id: string, data: Partial<ProductInput>): Pr
         create: images.map(img => ({
           ...img,
           entity_type: img.entity_type || 'product',
-          entity_id: img.entity_id || id
-        }))
-      } : undefined
+          entity_id: img.entity_id || id,
+        })),
+      } : undefined,
     },
     include: {
       notes: true,
       metrics: true,
       images: true,
-    }
+    },
   })
 
+  updateTag('products')
+  updateTag('product')
   return product
 }
 
+export async function deleteProduct(id: string) {
+  await requireAdmin()
+  await prisma.product.delete({ where: { id } })
+  updateTag('products')
+  updateTag('product')
+}
+
+export async function toggleProductActive(id: string) {
+  await requireAdmin()
+  const product = await prisma.product.findUnique({ where: { id } })
+  if (!product) throw new Error('Product not found')
+  await prisma.product.update({
+    where: { id },
+    data: { is_active: !product.is_active },
+  })
+  updateTag('products')
+  updateTag('product')
+}
+
+export async function toggleProductFeatured(id: string) {
+  await requireAdmin()
+  const product = await prisma.product.findUnique({ where: { id } })
+  if (!product) throw new Error('Product not found')
+  await prisma.product.update({
+    where: { id },
+    data: { is_featured: !product.is_featured },
+  })
+  updateTag('products')
+}
+
 export async function uploadImage(file: FormData): Promise<{ blob_url: string }> {
+  await requireAdmin()
   const image = file.get('file') as File
   if (!image) throw new Error('No file provided')
 

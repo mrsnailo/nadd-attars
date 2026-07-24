@@ -1,21 +1,24 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 import { auth } from '@/auth'
+import { NextResponse } from 'next/server'
 
-export async function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
-    const session = await auth();
+export default auth((req) => {
+  const { pathname } = req.nextUrl
 
-    if (!session?.user) {
-      const loginUrl = new URL('/admin/login', request.url)
-      loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
+  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    if (!req.auth?.user) {
+      const loginUrl = new URL('/admin/login', req.url)
+      loginUrl.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(loginUrl)
+    }
+
+    if (req.auth.user.role !== 'admin') {
+      return new NextResponse('Forbidden', { status: 403 })
     }
   }
 
   return NextResponse.next()
-}
+})
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/:path*'],
 }

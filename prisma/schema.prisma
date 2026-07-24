@@ -7,15 +7,36 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ─── CATALOG ───────────────────────────────────────────────────────
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  image_url   String?
+  sort_order  Int       @default(0)
+  is_active   Boolean   @default(true)
+  parent_id   String?
+  parent      Category? @relation("CategoryTree", fields: [parent_id], references: [id])
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
 model Product {
   id                       String          @id @default(cuid())
   slug                     String          @unique
   name                     String
   price                    Decimal
+  compare_at_price         Decimal?
   currency                 String          @default("USD")
   size                     String
   family                   String
   stock_count              Int             @default(0)
+  is_active                Boolean         @default(true)
+  is_featured              Boolean         @default(false)
   description              String?
   subtitle                 String?
   concentration            String?
@@ -26,11 +47,22 @@ model Product {
   ingredients              String?
   how_to_wear_instructions String?
   shipping_rules           String?
+  sku                      String?         @unique
+  weight_grams             Int?
+  category_id              String?
+  category                 Category?       @relation(fields: [category_id], references: [id])
   created_at               DateTime        @default(now())
+  updated_at               DateTime        @updatedAt
 
-  notes                    ProductNotes[]
-  metrics                  ProductMetrics?
-  images                   Images[]
+  notes      ProductNotes[]
+  metrics    ProductMetrics?
+  images     Images[]
+  cart_items  CartItem[]
+  order_items OrderItem[]
+
+  @@index([category_id])
+  @@index([is_active, is_featured])
+  @@index([family])
 }
 
 model ProductNotes {
@@ -54,17 +86,172 @@ model ProductMetrics {
 }
 
 model Images {
-  id            String  @id @default(cuid())
-  entity_type   String  // e.g. "product" or "homepage"
+  id            String   @id @default(cuid())
+  entity_type   String
   entity_id     String
   productId     String?
   product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   blob_url      String
-  display_order Int     @default(0)
+  display_order Int      @default(0)
   alt_text      String?
+
+  @@index([entity_type, entity_id])
 }
 
-// NextAuth / Standard User Auth Models
+// ─── CART ──────────────────────────────────────────────────────────
+
+model Cart {
+  id         String     @id @default(cuid())
+  user_id    String?
+  user       User?      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  session_id String?    @unique
+  items      CartItem[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  @@index([user_id])
+}
+
+model CartItem {
+  id         String  @id @default(cuid())
+  cart_id    String
+  cart       Cart    @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+  product_id String
+  product    Product @relation(fields: [product_id], references: [id])
+  quantity   Int     @default(1)
+
+  @@unique([cart_id, product_id])
+}
+
+// ─── ORDERS ───────────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Order {
+  id               String        @id @default(cuid())
+  order_number     String        @unique
+  user_id          String?
+  user             User?         @relation(fields: [user_id], references: [id])
+  status           OrderStatus   @default(PENDING)
+  payment_status   PaymentStatus @default(PENDING)
+  subtotal         Decimal
+  discount_amount  Decimal       @default(0)
+  shipping_amount  Decimal       @default(0)
+  tax_amount       Decimal       @default(0)
+  total            Decimal
+  currency         String        @default("USD")
+  customer_email   String
+  customer_name    String
+  customer_phone   String?
+  shipping_address_id String?
+  shipping_address Address? @relation("ShippingAddress", fields: [shipping_address_id], references: [id])
+  billing_address_id  String?
+  billing_address  Address? @relation("BillingAddress", fields: [billing_address_id], references: [id])
+  coupon_id        String?
+  coupon           Coupon?  @relation(fields: [coupon_id], references: [id])
+  payment_method   String?
+  payment_ref      String?
+  tracking_number  String?
+  tracking_url     String?
+  notes            String?
+  items            OrderItem[]
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  @@index([user_id])
+  @@index([status])
+  @@index([order_number])
+}
+
+model OrderItem {
+  id            String  @id @default(cuid())
+  order_id      String
+  order         Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product_id    String
+  product       Product @relation(fields: [product_id], references: [id])
+  product_name  String
+  product_slug  String
+  quantity      Int
+  unit_price    Decimal
+  total_price   Decimal
+}
+
+model Address {
+  id           String  @id @default(cuid())
+  user_id      String?
+  user         User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  full_name    String
+  line1        String
+  line2        String?
+  city         String
+  state        String?
+  postal_code  String
+  country      String
+  phone        String?
+
+  shipping_orders Order[] @relation("ShippingAddress")
+  billing_orders  Order[] @relation("BillingAddress")
+
+  @@index([user_id])
+}
+
+// ─── COUPONS ──────────────────────────────────────────────────────
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Coupon {
+  id              String       @id @default(cuid())
+  code            String       @unique
+  discount_type   DiscountType
+  discount_value  Decimal
+  min_order_value Decimal?
+  max_uses        Int?
+  used_count      Int          @default(0)
+  is_active       Boolean      @default(true)
+  valid_from      DateTime     @default(now())
+  valid_until     DateTime?
+  orders          Order[]
+  created_at      DateTime     @default(now())
+}
+
+// ─── STORE SETTINGS ───────────────────────────────────────────────
+
+model StoreSettings {
+  id             String  @id @default("default")
+  store_name     String  @default("NADD")
+  tagline        String? @default("Pure Essence. Timeless Craft.")
+  currency       String  @default("USD")
+  contact_email  String?
+  contact_phone  String?
+  address        String?
+  instagram_url  String?
+  whatsapp_url   String?
+  shipping_note  String?
+  free_shipping_threshold Decimal?
+  tax_rate       Decimal @default(0)
+  updated_at     DateTime @updatedAt
+}
+
+// ─── AUTH ──────────────────────────────────────────────────────────
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -78,6 +265,9 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
+  orders        Order[]
+  addresses     Address[]
+  cart          Cart[]
 }
 
 model Account {
