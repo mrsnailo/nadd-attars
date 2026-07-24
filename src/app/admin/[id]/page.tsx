@@ -1,11 +1,9 @@
 export const dynamic = 'force-dynamic'
 
 import ProductForm from '../components/ProductForm'
-import { PrismaClient } from '@prisma/client'
+import prisma from '@/lib/prisma'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-
-const prisma = new PrismaClient()
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

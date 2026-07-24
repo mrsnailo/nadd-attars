@@ -1,10 +1,8 @@
 export const dynamic = 'force-dynamic'
 
-import { PrismaClient } from '@prisma/client'
 import Link from 'next/link'
 import { seedDatabase } from '@/actions/seed'
-
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma'
 
 export default async function AdminDashboard() {
   const products = await prisma.product.findMany({

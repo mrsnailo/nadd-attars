@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createProduct, updateProduct, uploadImage, ProductInput } from '@/actions/admin'
+import { createProduct, updateProduct, uploadImage } from '@/actions/admin'
+import type { ProductInput } from '@/lib/validations'
 
 export default function ProductForm({ initialData }: { initialData?: any }) { // eslint-disable-line @typescript-eslint/no-explicit-any
   const router = useRouter()
