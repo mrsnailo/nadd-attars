@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -7,12 +8,8 @@ async function main() {
 
   // Prevent aggressive deletions
   const count = await prisma.product.count()
-  if (count > 0) {
-    console.log('Database already populated. Skipping seed.')
-    return
-  }
-
-  // --- Product 1: Oud Sultan ---
+  if (count === 0) {
+    // --- Product 1: Oud Sultan ---
   const p1 = await prisma.product.create({
     data: {
       slug: 'oud-sultan',
@@ -153,6 +150,29 @@ async function main() {
   })
 
   console.log(`Created product: ${p3.name}`)
+  } else {
+    console.log('Products already populated. Skipping product seed.')
+  }
+
+  // --- Admin User ---
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: 'admin@nadd.local' }
+  })
+
+  if (!existingAdmin) {
+    const hashedPassword = await bcrypt.hash('admin123', 10)
+    await prisma.user.create({
+      data: {
+        name: 'Admin User',
+        email: 'admin@nadd.local',
+        password: hashedPassword,
+        role: 'admin'
+      }
+    })
+    console.log('Created default admin user: admin@nadd.local / admin123')
+  } else {
+    console.log('Admin user already exists.')
+  }
 
   console.log('Seeding finished.')
 }
