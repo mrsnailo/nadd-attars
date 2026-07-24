@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   const productUrls = products.map((product) => ({
     url: `${baseUrl}/product/${product.slug}`,
-    lastModified: product.updated_at,
+    lastModified: product.created_at,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
