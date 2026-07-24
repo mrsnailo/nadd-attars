@@ -2,10 +2,29 @@
 
 import { PrismaClient } from '@prisma/client'
 import { updateTag, revalidatePath } from 'next/cache'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 export async function seedDatabase() {
+  // --- Admin User ---
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: 'admin@nadd.local' }
+  })
+
+  if (!existingAdmin) {
+    const hashedPassword = await bcrypt.hash('admin123', 10)
+    await prisma.user.create({
+      data: {
+        name: 'Admin User',
+        email: 'admin@nadd.local',
+        password: hashedPassword,
+        role: 'admin'
+      }
+    })
+    console.log('Created default admin user: admin@nadd.local / admin123')
+  }
+
   const count = await prisma.product.count()
   
   if (count > 0) {
