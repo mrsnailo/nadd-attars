@@ -1,12 +1,16 @@
+export const dynamic = 'force-dynamic';
 import { getProducts } from "@/lib/db";
 import Link from "next/link";
-import { Suspense } from "react";
+
+import Image from "next/image";
+
+const BLUR_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=";
 
 export default async function CollectionPage() {
   const products = await getProducts();
 
   return (
-    <div className="wrap">
+    <div className="wrap border-box" style={{ minHeight: '100vh', paddingBottom: '80px' }}>
       <div className="breadcrumb reveal"><Link href="/">Home</Link> / Collection</div>
       
       <section className="section tight">
@@ -24,7 +28,7 @@ export default async function CollectionPage() {
             <div className="chip">Woody</div>
           </div>
 
-          <Suspense fallback={<div>Loading archive...</div>}>
+          
             {products.length === 0 ? (
               <div className="empty-state">
                 <style dangerouslySetInnerHTML={{__html: `
@@ -36,25 +40,44 @@ export default async function CollectionPage() {
               </div>
             ) : (
               <div className="asym-grid reveal">
-                {products.map((p, i) => (
-                  <Link href={`/product/${p.slug}`} className={`prod-card ${i === 0 ? 'wide' : ''}`} key={p.id}>
-                    <div className="prod-eyebrow">{p.family}</div>
-                    <div className="prod-vial-row">
-                      <div className="vial"></div>
-                    </div>
-                    <div>
-                      <h3>{p.name}</h3>
-                      <div className="prod-notes">Fine Attar / {p.size}</div>
-                      <div className="prod-foot">
-                        <span className="price">{p.currency} {p.price}</span>
-                        <div className="prod-arrow">↗</div>
+                {products.map((p, i) => {
+                  const hasImage = p.images && p.images.length > 0;
+                  const imageUrl = hasImage ? p.images[0].blob_url : null;
+                  const altText = hasImage ? (p.images[0].alt_text || p.name) : p.name;
+                  
+                  return (
+                    <Link href={`/product/${p.slug}`} className={`prod-card ${i === 0 ? 'wide' : ''}`} key={p.id}>
+                      <div className="prod-eyebrow">{p.family}</div>
+                      <div className="prod-vial-row" style={{ position: 'relative' }}>
+                        {imageUrl ? (
+                          <div style={{ position: 'relative', width: '56px', height: '104px' }}>
+                             <Image 
+                               src={imageUrl} 
+                               alt={altText} 
+                               fill
+                               style={{ objectFit: 'contain' }}
+                               placeholder="blur"
+                               blurDataURL={BLUR_URL}
+                             />
+                          </div>
+                        ) : (
+                          <div className="vial"></div>
+                        )}
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                      <div>
+                        <h3>{p.name}</h3>
+                        <div className="prod-notes">Fine Attar / {p.size}</div>
+                        <div className="prod-foot">
+                          <span className="price">{p.currency} {p.price}</span>
+                          <div className="prod-arrow">↗</div>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             )}
-          </Suspense>
+          
         </div>
       </section>
     </div>
