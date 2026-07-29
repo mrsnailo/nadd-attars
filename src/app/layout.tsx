@@ -1,7 +1,29 @@
 import type { Metadata } from "next";
+import localFont from 'next/font/local';
 import "./globals.css";
 import Link from "next/link";
-import { ScrollObserver } from "@/components/ScrollObserver";
+import { GsapInit } from "@/components/GsapInit";
+
+const cormorant = localFont({
+  src: [
+    { path: '../fonts/cormorant-garamond-400-latin.woff2', weight: '400', style: 'normal' },
+    { path: '../fonts/cormorant-garamond-500-latin.woff2', weight: '500', style: 'normal' },
+    { path: '../fonts/cormorant-garamond-600-latin.woff2', weight: '600', style: 'normal' }
+  ],
+  display: 'swap',
+  variable: '--font-cormorant',
+});
+
+const jakarta = localFont({
+  src: [
+    { path: '../fonts/plus-jakarta-sans-300-latin.woff2', weight: '300', style: 'normal' },
+    { path: '../fonts/plus-jakarta-sans-400-latin.woff2', weight: '400', style: 'normal' },
+    { path: '../fonts/plus-jakarta-sans-500-latin.woff2', weight: '500', style: 'normal' },
+    { path: '../fonts/plus-jakarta-sans-600-latin.woff2', weight: '600', style: 'normal' }
+  ],
+  display: 'swap',
+  variable: '--font-jakarta',
+});
 
 export const metadata: Metadata = {
   title: "NAḎḎ — Attars & Oud, Dhaka",
@@ -14,49 +36,66 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${cormorant.variable} ${jakarta.variable}`}>
       <body>
-        <ScrollObserver />
-        <header className="site-nav">
-          <div className="nav-inner">
-            <Link href="/" className="logo">NA<span>ḎḎ</span></Link>
-            <nav className="navlinks">
-              <Link href="/">Home</Link>
-              <Link href="/collection">Collection</Link>
-              <Link href="/about">House</Link>
-              <Link href="/contact">Contact</Link>
+        <GsapInit />
+        <header className="site-head" data-od-id="site-header">
+          <div className="wrap site-head__inner">
+            <Link href="/" className="brand" data-od-id="brand-mark">NA<em>ḎḎ</em></Link>
+            <nav className="nav" aria-label="Primary" data-od-id="primary-nav">
+              <Link className="nav__link" href="/" data-od-id="nav-house">House</Link>
+              <Link className="nav__link" href="/collection" data-od-id="nav-collection">Collection</Link>
+              <Link className="nav__link" href="/product" data-od-id="nav-attar">Attar</Link>
+              <Link className="nav__link" href="/finder" data-od-id="nav-finder">Finder</Link>
             </nav>
-            <div className="nav-right">
-              <Link href="/cart" className="cart-btn">Bag · 0</Link>
-            </div>
+            <Link className="nav__cart" href="/cart" data-od-id="cart-count">
+              Vials <span className="num" data-cart-count>0</span>
+            </Link>
+            <button className="nav__toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-od-id="nav-toggle">
+              Menu
+            </button>
           </div>
         </header>
 
         {children}
 
-        <footer>
+        <footer className="site-foot" data-od-id="site-footer">
           <div className="wrap">
-            <div className="footer-grid">
-              <div>
-                <h4>Explore</h4>
-                <Link href="/collection">Full Collection</Link>
-                <Link href="/about">The House of NADD</Link>
+            <div className="site-foot__grid">
+              <div className="site-foot__col">
+                <p className="site-foot__note">Forty days in the dark, before a single vial opens.</p>
               </div>
-              <div>
-                <h4>Support</h4>
-                <Link href="/contact">Contact & FAQ</Link>
-                <Link href="#">Shipping</Link>
-                <Link href="#">Returns</Link>
+              <div className="site-foot__col">
+                <h4>House</h4>
+                <ul className="site-foot__list">
+                  <li><Link href="/">Index</Link></li>
+                  <li><Link href="/collection">Collection</Link></li>
+                  <li><Link href="/product">Attar</Link></li>
+                  <li><Link href="/finder">Finder</Link></li>
+                  <li><Link href="/cart">Cart</Link></li>
+                </ul>
               </div>
-              <div>
-                <h4>Legal</h4>
-                <Link href="#">Privacy Policy</Link>
-                <Link href="#">Terms of Service</Link>
+              <div className="site-foot__col">
+                <h4>Archive</h4>
+                <ul className="site-foot__list">
+                  <li><Link href="/finder">Olfactive families</Link></li>
+                  <li><Link href="/collection">Batches</Link></li>
+                  <li><Link href="/product">Dossiers</Link></li>
+                </ul>
+              </div>
+              <div className="site-foot__col">
+                <h4>Process</h4>
+                <ul className="site-foot__list">
+                  <li><Link href="/">Maceration</Link></li>
+                  <li><Link href="/">Extraction &amp; origin</Link></li>
+                  <li><Link href="/">Longevity &amp; sillage</Link></li>
+                </ul>
               </div>
             </div>
-            <div className="footer-bottom">
-              <span>©2026 NADD Attars. All rights reserved.</span>
-              <span>Dhaka, Bangladesh</span>
+            <div className="site-foot__meta">
+              <span>NAḎḎ Attars · Dhaka</span>
+              <span className="num">Six attars, one process</span>
+              <span>Non-alcoholic oil attars</span>
             </div>
           </div>
         </footer>

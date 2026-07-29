@@ -7,129 +7,134 @@ const BLUR_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1
 
 export default async function HomePage() {
   const products = await getProducts();
-  const indexProducts = products.slice(0, 4); // Limit for the index
-
-    const gradients = [
-    undefined,
-    "linear-gradient(180deg, rgba(196,80,80,.55), rgba(107,30,30,.85))",
-    "linear-gradient(180deg, rgba(212,175,55,.6), rgba(107,86,20,.9))",
-    "linear-gradient(180deg, rgba(224,220,208,.65), rgba(150,146,130,.85))",
-    "linear-gradient(180deg, rgba(120,90,170,.55), rgba(55,35,90,.85))",
-  ];
+  const indexProducts = products.slice(0, 6);
 
   return (
-    <>
-      {/* HERO */}
-      <section className="hero">
-        <div className="hero-left">
-          <span className="eyebrow on-dark reveal">Non-Alcoholic Oil Attars — Est. Dhaka</span>
-          <h1 className="reveal" style={{ transitionDelay: '.1s' }}>
-            Scent that sits<br/>on the skin,<br/><em>not the air.</em>
-          </h1>
-          <p className="reveal" style={{ transitionDelay: '.2s' }}>
-            Oud, saffron and rose distilled the old way — no ethanol, no rush. Each vial rests forty days in dark glass before it reaches a shelf.
-          </p>
-          <Link href="/collection" className="btn-gold reveal" style={{ transitionDelay: '.3s', alignSelf: 'flex-start' }}>
-            Enter the Collection →
-          </Link>
-        </div>
-        <div className="hero-right">
-          <div className="hero-meta reveal" style={{ transitionDelay: '.2s' }}>
-            <div className="hero-meta-row"><span>Origin</span><span>Cambodia · Kashmir · Taif</span></div>
-            <div className="hero-meta-row"><span>Format</span><span>Pure oil, no carrier alcohol</span></div>
-            <div className="hero-meta-row"><span>Batch</span><span>Aged 40+ days, dark glass</span></div>
-            <div className="hero-meta-row"><span>Shipping</span><span>Dhaka, nationwide 5–9 days</span></div>
+    <main id="content">
+      {/* 1. HERO */}
+      <section className="hero on-dark" data-od-id="hero">
+        <div className="wrap hero__inner">
+          <div>
+            <p className="eyebrow" data-motion="mask">Dhaka · Single house · Six attars</p>
+            <h1 className="hero__mark" data-motion="mask">NA<em>ḎḎ</em><br/>Attars</h1>
+            <p className="hero__sub" data-motion="mask">Scent that sits on the skin, not the air.</p>
+            <hr className="rule-inv hairline-draw hero__rule" data-motion="hairline" />
+            <div className="hero__meta">
+              <span className="label num">Non-alcoholic oil</span>
+              <span className="label num">40-day maceration</span>
+              <span className="label num">Batch 041 open</span>
+            </div>
+            <Link className="link-gold" href="/collection" data-od-id="hero-link">Read the archive</Link>
           </div>
-          <div className="hero-vial-wrap reveal" style={{ transitionDelay: '.3s' }}>
-            <div className="vial"></div>
-            <div className="mono" style={{ fontSize: '10.5px', color: 'var(--muted-on-dark)', letterSpacing: '.14em' }}>
-              No. 01<br/>DAHN AL OUD
+
+          <div className="hero__stage" data-od-id="hero-stage">
+            <svg className="hero__rings" viewBox="0 0 560 560" aria-hidden="true" focusable="false">
+              <circle cx="280" cy="280" r="80" />
+              <circle cx="280" cy="280" r="144" />
+              <circle cx="280" cy="280" r="208" />
+              <circle cx="280" cy="280" r="272" />
+            </svg>
+            <div className="hero__vial" data-motion="parallax" data-parallax="0.10">
+              <div className="vial vial--lg" role="img" aria-label="A 3 millilitre attar vial with a gold cap, half filled with oil.">
+                <span className="vial__cap"></span>
+                <span className="vial__neck"></span>
+                <span className="vial__body"></span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* MARQUEE */}
-      <div className="marquee-band">
-        <div className="marquee-track">
-          <span>Cambodian Oud</span><span>Kashmiri Saffron</span><span>Taifi Rose</span><span>White Musk</span><span>Amber Resin</span><span>Bakhoor Smoke</span>
-          <span>Cambodian Oud</span><span>Kashmiri Saffron</span><span>Taifi Rose</span><span>White Musk</span><span>Amber Resin</span><span>Bakhoor Smoke</span>
-        </div>
-      </div>
-      
-      {/* COLLECTION PREVIEW */}
-      <section className="section">
-        <div className="wrap">
-          <div className="section-head reveal">
-            <h2>Six attars, one process</h2>
-            <p>Every bottle carries a dossier of olfactory data — family, concentration, longevity, sillage — the same way a lab would log a specimen.</p>
+      {/* 2. THE SIX */}
+      <section className="section wrap" data-od-id="the-six">
+        <div className="head">
+          <p className="eyebrow" data-motion="mask">The collection</p>
+          <div className="head__row">
+            <h2 data-motion="mask">Six attars, one process.</h2>
+            <p className="lead head__note">Each vial carries a dossier: family, concentration, origin, extraction, and the batch it was drawn from.</p>
           </div>
+          <hr className="rule hairline-draw" data-motion="hairline" />
+        </div>
 
-          {products.length === 0 ? (
-            <div style={{ padding: '60px 0', textAlign: 'center', border: '1px solid var(--line-on-linen)' }}>
-              <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', marginBottom: '12px' }}>The collection is currently aging.</div>
-              <div style={{ color: 'var(--muted-on-linen)', fontSize: '14.5px' }}>Check back soon for our initial releases.</div>
-            </div>
-          ) : (
-            <div className="asym-grid">
-                {indexProducts.map((p, i) => {
-                  const hasImage = p.images && p.images.length > 0;
-                  const imageUrl = hasImage ? p.images[0].blob_url : null;
-                  const altText = hasImage ? (p.images[0].alt_text || p.name) : p.name;
-                  const customGradient = gradients[i % gradients.length];
-                  
-                  const isWide = (i % 5 === 0) || (i % 5 === 4);
-                  
-                  return (
-                    <Link href={`/product/${p.slug}`} className={`prod-card ${isWide ? 'wide' : ''} reveal reveal-stagger`} style={{ '--i': i } as React.CSSProperties} key={p.id}>
-                      <div className="prod-vial-row" style={{ position: 'relative' }}>
-                        {imageUrl ? (
-                          <div style={{ position: 'relative', width: '56px', height: '104px' }}>
-                             <Image 
-                               src={imageUrl} 
-                               alt={altText} 
-                               fill
-                               style={{ objectFit: 'contain' }}
-                               placeholder="blur"
-                               blurDataURL={BLUR_URL}
-                             />
-                          </div>
-                        ) : (
-                          <div className="vial" style={customGradient ? { background: customGradient } : {}}></div>
-                        )}
-                      </div>
-                      <div>
-                        <div className="prod-eyebrow">{p.family}</div>
-                        <h3>{p.name}</h3>
-                        <p className="prod-notes">Fine Attar / {p.size}</p>
-                        <div className="prod-foot">
-                          <span className="price">{p.currency} {p.price}</span>
-                          <div className="prod-arrow">↗</div>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-            </div>
-          )}
+        <div className="grid-hair" data-od-id="six-grid">
+          {indexProducts.map((p, i) => {
+            const hasImage = p.images && p.images.length > 0;
+            const imageUrl = hasImage ? p.images[0].blob_url : null;
+            const altText = hasImage ? (p.images[0].alt_text || p.name) : p.name;
+            const isWide = (i === 0);
+            
+            return (
+              <Link className={`six__card ${isWide ? 'col-3' : 'col-2'}`} href={`/product/${p.slug}`} key={p.id}>
+                <span className="six__index num">0{i+1} · Batch 041</span>
+                <div>
+                  {imageUrl ? (
+                    <div style={{ position: 'relative', width: '44px', height: '100px', marginBottom: 'var(--s-4)' }}>
+                      <Image 
+                        src={imageUrl} 
+                        alt={altText} 
+                        fill
+                        style={{ objectFit: 'contain' }}
+                        placeholder="blur"
+                        blurDataURL={BLUR_URL}
+                      />
+                    </div>
+                  ) : (
+                    <span className="vial vial--sm" aria-hidden="true"><span className="vial__cap"></span><span className="vial__neck"></span><span className="vial__body"></span></span>
+                  )}
+                  <h3 className="six__name">{p.name}</h3>
+                  <div className="six__spec">
+                    <span>Family · <b>{p.family || 'Undefined'}</b></span>
+                    <span>Concentration · <b>{p.concentration || '10%'}</b></span>
+                    {p.origin && <span>Origin · <b>{p.origin}</b></span>}
+                  </div>
+                </div>
+                <div className="six__foot">
+                  <span className="label">3 ml vial · 60 drawn</span>
+                  <span className="six__price">{p.currency} {p.price}</span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </section>
 
-      {/* EDITORIAL */}
-      <section className="section tight">
-        <div className="wrap">
-          <div className="edit-split reveal">
-            <div className="edit-visual"><div className="ring r1"></div><div className="ring r2"></div><div className="ring r3"></div></div>
-            <div className="edit-copy">
-              <span className="eyebrow">The Process</span>
-              <h2 style={{ marginTop: '14px' }}>Forty days in the dark, before a single vial opens.</h2>
-              <p>Every batch is macerated in aged sandalwood and left to settle in amber glass, away from light. What comes out isn&apos;t sprayed — it&apos;s dabbed, warmed by skin, and left to unfold in its own time.</p>
-              <p>No alcohol carrier means no sharp opening and no fast fade. What you smell in the first minute is close to what lingers in the eighth hour.</p>
-              <Link href="/about" className="btn-line" style={{ alignSelf: 'flex-start', marginTop: '8px' }}>Read the Full Process →</Link>
-            </div>
+      {/* 3. MACERATION BLOCK */}
+      <section className="section wrap" data-od-id="maceration">
+        <div className="grid-hair">
+          <div className="col-2 panel" style={{ padding: 'var(--s-8) var(--s-6)' }}>
+            <p className="eyebrow">The Method</p>
+            <h3 style={{ marginTop: 'var(--s-5)', maxWidth: '14ch' }}>Every batch rests forty days in the dark.</h3>
+            <p className="lead" style={{ marginTop: 'var(--s-4)' }}>We macerate in aged sandalwood, away from light and heat. What emerges feels dense and moves slowly.</p>
+          </div>
+          <div className="col-4 panel" style={{ display: 'grid', placeItems: 'center', minHeight: '320px', padding: 'var(--s-6)' }}>
+            <svg viewBox="0 0 420 420" style={{ width: '100%', maxWidth: '320px' }}>
+              <circle cx="210" cy="210" r="200" fill="none" stroke="var(--rule)" strokeWidth="1" />
+              <path d="M 210,10 A 200,200 0 0,1 410,210" fill="none" stroke="var(--gold)" strokeWidth="2" />
+              <text x="210" y="215" textAnchor="middle" className="num" style={{ fontSize: '2.5rem', fill: 'var(--fg)' }}>40</text>
+              <text x="210" y="235" textAnchor="middle" className="label" style={{ fill: 'var(--muted)' }}>Days</text>
+              
+              <circle cx="210" cy="10" r="4" fill="var(--gold)" />
+              <circle cx="410" cy="210" r="4" fill="var(--gold)" />
+            </svg>
           </div>
         </div>
       </section>
-    </>
+
+      {/* 4. DISCOVERY SET */}
+      <section className="section wrap" data-od-id="discovery">
+        <div className="panel" style={{ padding: 'var(--s-8) var(--s-6)', display: 'grid', gap: 'var(--s-6)', justifyItems: 'center', textAlign: 'center' }}>
+          <div style={{ display: 'flex', gap: 'var(--s-4)' }}>
+            <span className="vial vial--sm" aria-hidden="true"><span className="vial__cap"></span><span className="vial__neck"></span><span className="vial__body"></span></span>
+            <span className="vial vial--sm" aria-hidden="true"><span className="vial__cap"></span><span className="vial__neck"></span><span className="vial__body"></span></span>
+            <span className="vial vial--sm" aria-hidden="true"><span className="vial__cap"></span><span className="vial__neck"></span><span className="vial__body"></span></span>
+          </div>
+          <div>
+            <h3>The Discovery Set</h3>
+            <p className="lead" style={{ maxWidth: '42ch', margin: 'var(--s-2) auto 0' }}>Six 0.5ml vials to document the full olfactory range of the house on your own skin.</p>
+          </div>
+          <Link className="btn-gold" href="/finder" data-od-id="discovery-cta">Take the set · ৳ 2,400</Link>
+        </div>
+      </section>
+    </main>
   );
 }
