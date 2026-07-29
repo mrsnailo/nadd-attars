@@ -14,7 +14,7 @@ type CartItem = {
     name: string
     size: string
     batch_no?: string | null
-    price: any
+    price: number | string
     images?: { blob_url: string; alt_text?: string | null }[]
   }
 }
@@ -176,7 +176,7 @@ export default function CartView({ initialCart }: { initialCart: CartData | null
 
             <div className="pd" id="cart-content">
               
-              <div className="pd__col cart__list" id="cart-list" data-od-id="cart-list" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
+              <div className="pd__col cart__list" id="cart-list" data-od-id="cart-list" style={{ opacity: isPending ? 0.7 : 1, transition: 'opacity var(--dur-2)' }}>
                 {items.map((item: CartItem) => {
                   const product = item.product;
                   const hasImage = product.images && product.images.length > 0;

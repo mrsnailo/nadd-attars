@@ -13,5 +13,5 @@ export default async function CartPage() {
   const sessionId = cookieStore.get('cart_session')?.value || ''
   const cart = sessionId ? await getOrCreateCart(sessionId) : null
 
-  return <CartView initialCart={cart} />
+  return <CartView initialCart={cart as never} />
 }
