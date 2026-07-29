@@ -13,21 +13,21 @@ type CartItem = {
     id: string
     name: string
     size: string
-    batch_no?: string
-    price: string | number
-    images?: { blob_url: string; alt_text?: string }[]
+    batch_no?: string | null
+    price: any
+    images?: { blob_url: string; alt_text?: string | null }[]
   }
 }
 
 type CartData = {
-  session_id: string
+  session_id: string | null
   items: CartItem[]
 }
 
 
 const BLUR_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=";
 
-export default function CartView({ initialCart }: { initialCart: CartData }) {
+export default function CartView({ initialCart }: { initialCart: CartData | null }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   
@@ -59,7 +59,7 @@ export default function CartView({ initialCart }: { initialCart: CartData }) {
     if (quantity < 1) quantity = 1;
     if (quantity > 9) quantity = 9;
     startTransition(() => {
-      updateCartItem(initialCart.session_id, productId, quantity).then(() => {
+      updateCartItem(initialCart?.session_id || "", productId, quantity).then(() => {
         router.refresh()
       })
     })
@@ -67,7 +67,7 @@ export default function CartView({ initialCart }: { initialCart: CartData }) {
 
   const handleRemove = (productId: string) => {
     startTransition(() => {
-      removeFromCart(initialCart.session_id, productId).then(() => {
+      removeFromCart(initialCart?.session_id || "", productId).then(() => {
         router.refresh()
       })
     })
@@ -180,8 +180,8 @@ export default function CartView({ initialCart }: { initialCart: CartData }) {
                 {items.map((item: CartItem) => {
                   const product = item.product;
                   const hasImage = product.images && product.images.length > 0;
-                  const imageUrl = hasImage ? product.images[0].blob_url : null;
-                  const altText = hasImage && product.images[0].alt_text ? product.images[0].alt_text : product.name;
+                  const imageUrl = hasImage ? product.images![0].blob_url : null;
+                  const altText = hasImage && product.images![0].alt_text ? product.images![0].alt_text : product.name;
                   const itemPrice = Number(product.price);
                   
                   return (
