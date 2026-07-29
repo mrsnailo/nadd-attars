@@ -59,8 +59,8 @@ export function ScrollObserver() {
     // [data-motion="parallax"]
     const parallaxNodes = document.querySelectorAll('[data-motion="parallax"]');
     parallaxNodes.forEach((el: any) => {
-      let amount = parseFloat(el.getAttribute("data-parallax") || "0.12");
-      let shift = ((el as HTMLElement).offsetHeight || window.innerHeight) * amount;
+      const amount = parseFloat(el.getAttribute("data-parallax") || "0.12");
+      const shift = ((el as HTMLElement).offsetHeight || window.innerHeight) * amount;
       gsap.fromTo(
         el,
         { y: -shift / 2 },

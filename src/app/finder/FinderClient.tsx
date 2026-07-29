@@ -19,32 +19,32 @@ const defaultCoordinates: Record<string, [number, number, number, number]> = {
 
 export default function FinderClient({ products }: { products: any[] }) {
   useEffect(() => {
-    let REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let attars = Array.prototype.slice.call(document.querySelectorAll("[data-attar]"));
-    let sliders = document.querySelectorAll(".calib-range") as NodeListOf<HTMLInputElement>;
-    let list = document.getElementById("results-list");
-    let polyUser = document.getElementById("poly-user");
+    const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const attars = Array.prototype.slice.call(document.querySelectorAll("[data-attar]"));
+    const sliders = document.querySelectorAll(".calib-range") as NodeListOf<HTMLInputElement>;
+    const list = document.getElementById("results-list");
+    const polyUser = document.getElementById("poly-user");
     if(!list || !polyUser || sliders.length < 4) return;
     
     let w = 50, x = 50, y = 50, z = 50;
 
     function getPts(v0: number, v1: number, v2: number, v3: number) {
-      let r = [v0, v1, v2, v3, 100 - v0, 100 - v1, 100 - v2, 100 - v3];
-      let pts = [];
+      const r = [v0, v1, v2, v3, 100 - v0, 100 - v1, 100 - v2, 100 - v3];
+      const pts = [];
       for (let i = 0; i < 8; i++) {
-        let a = (i * 45) * Math.PI / 180;
-        let px = r[i] * Math.sin(a);
-        let py = -r[i] * Math.cos(a);
+        const a = (i * 45) * Math.PI / 180;
+        const px = r[i] * Math.sin(a);
+        const py = -r[i] * Math.cos(a);
         pts.push(px.toFixed(1) + "," + py.toFixed(1));
       }
       return pts.join(" ");
     }
 
     function getDistance(a: any) {
-      let aw = parseFloat(a.getAttribute("data-w") || "50");
-      let ax = parseFloat(a.getAttribute("data-x") || "50");
-      let ay = parseFloat(a.getAttribute("data-y") || "50");
-      let az = parseFloat(a.getAttribute("data-z") || "50");
+      const aw = parseFloat(a.getAttribute("data-w") || "50");
+      const ax = parseFloat(a.getAttribute("data-x") || "50");
+      const ay = parseFloat(a.getAttribute("data-y") || "50");
+      const az = parseFloat(a.getAttribute("data-z") || "50");
       return Math.sqrt(Math.pow(w - aw, 2) + Math.pow(x - ax, 2) + Math.pow(y - ay, 2) + Math.pow(z - az, 2));
     }
     
@@ -53,7 +53,7 @@ export default function FinderClient({ products }: { products: any[] }) {
     }
 
     function boxes() {
-      let m = new Map();
+      const m = new Map();
       attars.forEach(function(el) { m.set(el, el.getBoundingClientRect()); });
       return m;
     }
@@ -63,24 +63,24 @@ export default function FinderClient({ products }: { products: any[] }) {
     function apply() {
       if(polyUser) polyUser.setAttribute("points", getPts(w, x, y, z));
 
-      let distances: any[] = [];
+      const distances: any[] = [];
       attars.forEach(function(el) {
-        let d = getDistance(el);
-        let s = getStrength(d);
+        const d = getDistance(el);
+        const s = getStrength(d);
         distances.push({ el: el, d: d, s: s });
-        let pbar = el.querySelector(".match-bar") as HTMLElement;
+        const pbar = el.querySelector(".match-bar") as HTMLElement;
         if(pbar) pbar.style.setProperty("--v", String(Math.round(s)));
       });
 
       distances.sort(function(a, b) { return a.d - b.d; });
-      let newOrder = distances.map(function(o) { return o.el.id; }).join(",");
+      const newOrder = distances.map(function(o) { return o.el.id; }).join(",");
 
       if (newOrder !== lastOrder) {
         let first: any = null;
         if (!REDUCED && lastOrder) first = boxes();
 
         distances.forEach(function(o, i) {
-          let el = o.el;
+          const el = o.el;
           el.classList.remove("is-rank-1", "is-rank-2", "is-rank-other");
           if (i === 0) el.classList.add("is-rank-1");
           else if (i === 1) el.classList.add("is-rank-2");
@@ -90,11 +90,11 @@ export default function FinderClient({ products }: { products: any[] }) {
         });
 
         if (first) {
-          let last = boxes();
+          const last = boxes();
           attars.forEach(function(el) {
-            let f = first.get(el);
-            let l = last.get(el);
-            let dy = f.top - l.top;
+            const f = first.get(el);
+            const l = last.get(el);
+            const dy = f.top - l.top;
             if (dy !== 0) {
               el.animate([
                 { transform: "translateY(" + dy + "px)" },
@@ -120,9 +120,9 @@ export default function FinderClient({ products }: { products: any[] }) {
     apply();
 
     // Voice phrasing
-    let WORDS = ["far toward", "toward", "leaning", "balanced", "leaning", "toward", "far toward"];
+    const WORDS = ["far toward", "toward", "leaning", "balanced", "leaning", "toward", "far toward"];
     function phrase(el: HTMLInputElement) {
-      let v = Number(el.value),
+      const v = Number(el.value),
           low = el.getAttribute('data-pole-low'), high = el.getAttribute('data-pole-high'),
           band = Math.min(6, Math.floor(v / (100 / 7))),
           word = WORDS[band];

@@ -47,10 +47,10 @@ export default function ProductClient({ product, relatedProducts }: { product: a
     }
 
     function paint() {
-      let size = state.size, d = SIZES[size], st = statusOf(size);
+      const size = state.size, d = SIZES[size], st = statusOf(size);
       
       Array.prototype.forEach.call(seg, function (btn) {
-        let s = btn.getAttribute("data-size"), ds = SIZES[s], bs = statusOf(s);
+        const s = btn.getAttribute("data-size"), ds = SIZES[s], bs = statusOf(s);
         btn.setAttribute("aria-checked", String(s === size));
         btn.disabled = bs === "unavailable" || bs === "sold";
         const note = btn.querySelector("[data-seg-note]");
@@ -75,11 +75,11 @@ export default function ProductClient({ product, relatedProducts }: { product: a
       if(batchDraw) batchDraw.textContent = st === "unavailable" ? "0" : String(d.drawn);
       if(batchLeft) batchLeft.textContent = st === "sold" ? "0 remain" :
                               st === "unavailable" ? "not drawn" : d.left + " remain";
-      let pct = st === "sold" || st === "unavailable" || !d.drawn ? 0 : Math.round((d.left / d.drawn) * 100);
+      const pct = st === "sold" || st === "unavailable" || !d.drawn ? 0 : Math.round((d.left / d.drawn) * 100);
       
       if(batchBar){
         (batchBar as HTMLElement).style.setProperty("--v", String(pct));
-        let par = batchBar.parentNode as HTMLElement;
+        const par = batchBar.parentNode as HTMLElement;
         if(par) par.setAttribute("aria-label",
           st === "unavailable" ? `12 ml was not drawn for batch ${product.sku || '041'}`
                                : d.left + " of " + d.drawn + ` vials remain in batch ${product.sku || '041'}`);
@@ -105,18 +105,18 @@ export default function ProductClient({ product, relatedProducts }: { product: a
     }
 
     const clickSeg = (e: any) => {
-        let btn = e.currentTarget;
+        const btn = e.currentTarget;
         if (btn.disabled) return;
         state.size = btn.getAttribute("data-size");
         paint();
     };
     const keySeg = (e: any) => {
-        let btn = e.currentTarget;
+        const btn = e.currentTarget;
         if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
         e.preventDefault();
-        let i = ORDER.indexOf(btn.getAttribute("data-size"));
-        let next = ORDER[(i + (e.key === "ArrowRight" ? 1 : ORDER.length - 1)) % ORDER.length];
-        let el = document.querySelector('.seg__opt[data-size="' + next + '"]') as any;
+        const i = ORDER.indexOf(btn.getAttribute("data-size"));
+        const next = ORDER[(i + (e.key === "ArrowRight" ? 1 : ORDER.length - 1)) % ORDER.length];
+        const el = document.querySelector('.seg__opt[data-size="' + next + '"]') as any;
         if(el){
             el.focus();
             if (!el.disabled) { state.size = next; paint(); }
@@ -129,8 +129,8 @@ export default function ProductClient({ product, relatedProducts }: { product: a
     });
 
     const clickStateBtn = (e: any) => {
-        let b = e.currentTarget;
-        let name = b.getAttribute("data-state");
+        const b = e.currentTarget;
+        const name = b.getAttribute("data-state");
         state.soldOut = name === "sold";
         if (name === "in") state.size = "3";
         if (name === "low") state.size = "6";
@@ -147,9 +147,9 @@ export default function ProductClient({ product, relatedProducts }: { product: a
     });
 
     const clickAcc = (e: any) => {
-        let head = e.currentTarget;
-        let item = head.parentNode;
-        let open = item.getAttribute("data-open") === "true";
+        const head = e.currentTarget;
+        const item = head.parentNode;
+        const open = item.getAttribute("data-open") === "true";
         item.setAttribute("data-open", String(!open));
         head.setAttribute("aria-expanded", String(!open));
     };
@@ -158,7 +158,7 @@ export default function ProductClient({ product, relatedProducts }: { product: a
       head.addEventListener("click", clickAcc);
     });
 
-    let tiers = document.querySelectorAll("[data-tier]");
+    const tiers = document.querySelectorAll("[data-tier]");
     let tierObs: any;
     if (REDUCED || !("IntersectionObserver" in window)) {
       Array.prototype.forEach.call(tiers, function (t) { t.classList.add("is-resolved"); });
@@ -173,18 +173,18 @@ export default function ProductClient({ product, relatedProducts }: { product: a
       Array.prototype.forEach.call(tiers, function (t) { tierObs.observe(t); });
     }
 
-    let pyramid = document.querySelector('[data-od-id="product-pyramid"]');
+    const pyramid = document.querySelector('[data-od-id="product-pyramid"]');
     if(bar) (bar as any).hidden = false;
     function readBar() {
       if(!pyramid || !bar) return;
-      let past = pyramid.getBoundingClientRect().bottom < 0;
+      const past = pyramid.getBoundingClientRect().bottom < 0;
       bar.classList.toggle("is-in", past);
     }
     window.addEventListener("scroll", readBar, { passive: true });
     window.addEventListener("resize", readBar);
     readBar();
 
-    let countEl = document.querySelector("[data-cart-count]");
+    const countEl = document.querySelector("[data-cart-count]");
     let count = parseInt(window.localStorage.getItem("nadd-vials") || "0", 10) || 0;
     function paintCount() { if(countEl) countEl.textContent = count < 10 ? "0" + count : String(count); }
     paintCount();
@@ -194,7 +194,7 @@ export default function ProductClient({ product, relatedProducts }: { product: a
       count += 1;
       window.localStorage.setItem("nadd-vials", String(count));
       paintCount();
-      let d = SIZES[state.size];
+      const d = SIZES[state.size];
       if (d.left > 0) { d.left -= 1; }
       addBtn.textContent = "Logged · " + state.size + " ml";
       window.setTimeout(function () { paint(); }, 1400);
@@ -203,7 +203,7 @@ export default function ProductClient({ product, relatedProducts }: { product: a
 
     const submitNotify = (e: any) => {
         e.preventDefault();
-        let input = document.getElementById("notify-mail") as HTMLInputElement;
+        const input = document.getElementById("notify-mail") as HTMLInputElement;
         if (!input.value || input.value.indexOf("@") === -1) { input.focus(); return; }
         const ack = document.querySelector("[data-notify-ack]");
         if(ack) (ack as any).hidden = false;

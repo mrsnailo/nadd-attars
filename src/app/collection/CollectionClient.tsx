@@ -40,7 +40,7 @@ export default function CollectionClient({ products }: { products: any[] }) {
       if (s.family && el.getAttribute("data-family") !== s.family) return false;
       if (s.conc && concBand(parseFloat(el.getAttribute("data-conc") || "0")) !== s.conc) return false;
       if (s.origin) {
-        let o = (el.getAttribute("data-origin")||"").toLowerCase();
+        const o = (el.getAttribute("data-origin")||"").toLowerCase();
         if (o.indexOf(s.origin.toLowerCase().trim()) === -1) return false;
       }
       if (s.long && parseFloat(el.getAttribute("data-long") || "0") < s.long) return false;
@@ -48,17 +48,17 @@ export default function CollectionClient({ products }: { products: any[] }) {
     }
 
     function countWith(over: any) {
-      let s = { family: state.family, conc: state.conc, origin: state.origin, long: state.long } as any;
-      for (let k in over) { if (Object.prototype.hasOwnProperty.call(over, k)) s[k] = over[k]; }
+      const s = { family: state.family, conc: state.conc, origin: state.origin, long: state.long } as any;
+      for (const k in over) { if (Object.prototype.hasOwnProperty.call(over, k)) s[k] = over[k]; }
       return cards.filter(function (el) { return matches(el, s); }).length;
     }
 
     function paintCounts() {
       chips.forEach(function (chip) {
-        let group = chip.getAttribute("data-filter") as string;
-        let value = chip.getAttribute("data-value") as string;
-        let over = {} as any; over[group] = value;
-        let n = countWith(over);
+        const group = chip.getAttribute("data-filter") as string;
+        const value = chip.getAttribute("data-value") as string;
+        const over = {} as any; over[group] = value;
+        const n = countWith(over);
         const countSpan = chip.querySelector("[data-count]");
         if (countSpan) countSpan.textContent = n < 10 ? "0" + n : String(n);
         chip.setAttribute("data-empty", n === 0 && chip.getAttribute("aria-pressed") !== "true" ? "true" : "false");
@@ -74,7 +74,7 @@ export default function CollectionClient({ products }: { products: any[] }) {
       if(el_origin) el_origin.textContent = pad(countWith({ origin: state.origin }));
       if(el_long) el_long.textContent   = pad(countWith({ long: state.long }));
 
-      let oHint = document.querySelector('[data-hint="origin"]');
+      const oHint = document.querySelector('[data-hint="origin"]');
       if(oHint) oHint.textContent = state.origin
         ? pad(countWith({ origin: state.origin })) + " of " + pad(cards.length) + " drawn from “" + state.origin.trim() + "”"
         : "Sylhet · Taif · Mysore · Andalusia · Gujarat · Kashmir";
@@ -96,8 +96,8 @@ export default function CollectionClient({ products }: { products: any[] }) {
         el.classList.toggle("is-out", visible.indexOf(el) === -1);
       });
 
-      let units = visible.length ? 3 + 2 * (visible.length - 1) : 0;
-      let fill = visible.length ? (6 - (units % 6)) % 6 : 0;
+      const units = visible.length ? 3 + 2 * (visible.length - 1) : 0;
+      const fill = visible.length ? (6 - (units % 6)) % 6 : 0;
 
       [fillVert, fillNote].forEach(function (el: any) {
         if(!el) return;
@@ -106,7 +106,7 @@ export default function CollectionClient({ products }: { products: any[] }) {
       });
 
       if (fill > 0) {
-        let el = (fill <= 2 ? fillVert : fillNote) as any;
+        const el = (fill <= 2 ? fillVert : fillNote) as any;
         if(el) {
           el.classList.add("col-" + fill);
           el.hidden = false;
@@ -116,7 +116,7 @@ export default function CollectionClient({ products }: { products: any[] }) {
     }
 
     function boxes() {
-      let m = new Map();
+      const m = new Map();
       Array.prototype.forEach.call(grid?.children || [], function (el) {
         if (el.hidden || el.classList.contains("is-out")) return;
         m.set(el, el.getBoundingClientRect());
@@ -126,12 +126,12 @@ export default function CollectionClient({ products }: { products: any[] }) {
 
     function transition(mutate: () => void) {
       if (REDUCED) { mutate(); return; }
-      let first = boxes();
+      const first = boxes();
       mutate();
-      let last = boxes();
+      const last = boxes();
 
       last.forEach(function (a, el) {
-        let b = first.get(el);
+        const b = first.get(el);
         if (!b) {
           el.animate(
             [{ clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)" }],
@@ -139,8 +139,8 @@ export default function CollectionClient({ products }: { products: any[] }) {
           );
           return;
         }
-        let dx = b.left - a.left, dy = b.top - a.top;
-        let widthChanged = Math.abs(b.width - a.width) > 1;
+        const dx = b.left - a.left, dy = b.top - a.top;
+        const widthChanged = Math.abs(b.width - a.width) > 1;
 
         if (widthChanged) {
           el.animate(
@@ -158,7 +158,7 @@ export default function CollectionClient({ products }: { products: any[] }) {
     }
 
     function apply() {
-      let visible = cards.filter(function (el) { return matches(el, state); });
+      const visible = cards.filter(function (el) { return matches(el, state); });
       transition(function () { relayout(visible); });
 
       if(shownEl) shownEl.textContent = pad(visible.length);
@@ -187,9 +187,9 @@ export default function CollectionClient({ products }: { products: any[] }) {
 
     const clickChips = (e: any) => {
         const chip = e.currentTarget;
-        let group = chip.getAttribute("data-filter");
-        let value = chip.getAttribute("data-value");
-        let on = (state as any)[group] === value;
+        const group = chip.getAttribute("data-filter");
+        const value = chip.getAttribute("data-value");
+        const on = (state as any)[group] === value;
         (state as any)[group] = on ? null : value;
         chips.forEach(function (c: any) {
             if (c.getAttribute("data-filter") !== group) return;

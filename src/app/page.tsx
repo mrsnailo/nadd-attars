@@ -168,7 +168,7 @@ export default async function HomePage() {
                   <p>Turned once by hand, never shaken. Sharpness on the opening measurably falls.</p>
                 </div>
                 <div className="mac__phase">
-                  <h3>Day <span className="num">30</span>—<span class="num">40</span> · Draw</h3>
+                  <h3>Day <span className="num">30</span>—<span className="num">40</span> · Draw</h3>
                   <p>Decanted through cotton, held two days, then drawn into sixty 3 ml vials and logged.</p>
                 </div>
               </div>
