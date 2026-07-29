@@ -10,6 +10,7 @@ const productListIncludes = {
     take: 1,
   },
   notes: true as const,
+  metrics: true as const,
   category: { select: { id: true, name: true, slug: true } },
 }
 
