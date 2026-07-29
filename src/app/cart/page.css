@@ -1,0 +1,99 @@
+
+/* cart.html only — page compositions. Tokens are not restated, motion helpers are not
+   redefined. Reuses classes from product.html and collection.html. */
+
+/* ---------- Copied Vial ---------- */
+
+
+/* ---------- Copied App Stepper (seg) ---------- */
+.seg {
+  display: inline-grid; grid-auto-flow: column;
+  gap: var(--hairline);
+  background: var(--rule-strong);
+  border: var(--hairline) solid var(--rule-strong);
+}
+.seg__opt {
+  display: grid; place-items: center; justify-items: center; align-content: center;
+  padding: 0 var(--s-5); min-width: 44px; height: 44px;
+  background: var(--bg);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+button.seg__opt:hover:not([disabled]) { background: var(--surface); }
+.seg__size { font-size: var(--t-body); font-weight: var(--w-body-medium); }
+.seg__opt[disabled] { cursor: not-allowed; color: var(--rule-strong); }
+
+/* ---------- Copied Button ---------- */
+
+
+/* ---------- Cart Layout ---------- */
+.pd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--s-10);
+  align-items: start;
+}
+.pd__col { display: grid; gap: var(--s-8); }
+
+.cart__header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-5); border-bottom: var(--hairline) solid var(--rule-strong); padding-bottom: var(--s-5); }
+.cart__header h1 { font-family: var(--font-display); font-size: var(--t-d1); line-height: var(--lh-display); }
+
+.cart__list { display: grid; }
+.cart__line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto 110px;
+  gap: var(--s-6);
+  padding-block: var(--s-7);
+  border-bottom: var(--line-light);
+  align-items: center;
+  transform-origin: top;
+  will-change: transform, max-height, opacity, padding;
+  transition: transform var(--dur-3) var(--ease-out), max-height var(--dur-3) var(--ease-out), padding var(--dur-3) var(--ease-out), opacity var(--dur-3) var(--ease-out);
+  max-height: 250px;
+  overflow: hidden;
+}
+.cart__line--remove {
+  max-height: 0;
+  padding-top: 0; padding-bottom: 0;
+  border-bottom-width: 0;
+  opacity: 0;
+  transform: scaleY(0.95);
+}
+
+.cart__meta { display: grid; gap: var(--s-2); align-self: center; }
+.cart__meta .six__name { margin-top: 0; font-size: var(--t-d4); }
+.cart__qty { display: grid; align-items: center; justify-items: center; }
+.cart__total { display: grid; gap: var(--s-4); justify-items: end; text-align: right; }
+.cart__remove { font-size: var(--t-small); color: var(--muted); text-decoration: underline; text-underline-offset: 4px; transition: color var(--dur-2) var(--ease-out); }
+.cart__remove:hover { color: var(--fg); }
+
+/* Right Column Summary */
+.summary {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--s-6));
+  background: var(--surface);
+  border: var(--line-light);
+  padding: var(--s-9) var(--s-7) var(--s-7);
+  display: grid; gap: var(--s-8);
+}
+.summary h2 { border-bottom: var(--line-light); padding-bottom: var(--s-4); }
+.summary__rows { display: grid; gap: var(--s-5); }
+.summary__row { display: flex; justify-content: space-between; align-items: baseline; font-size: var(--t-body); }
+.summary__row--total { padding-top: var(--s-5); border-top: var(--line-light); }
+
+/* Empty State */
+.empty { display: none; gap: var(--s-4); padding: var(--s-9) 0; }
+.empty h3 { max-width: 22ch; }
+
+@media (max-width: 820px) {
+  .pd { grid-template-columns: 1fr; gap: var(--s-8); }
+  .summary { position: static; padding: var(--s-7) var(--s-6) var(--s-6); }
+  .cart__line { grid-template-columns: 44px minmax(0, 1fr); grid-template-areas: "thumb meta" ". qty" ". total"; gap: var(--s-5); align-items: start; }
+  .cart__thumb { grid-area: thumb; }
+  .cart__meta { grid-area: meta; }
+  .cart__qty { grid-area: qty; justify-items: start; }
+  .cart__total { grid-area: total; justify-items: start; display: flex; align-items: baseline; justify-content: space-between; width: 100%; flex-direction: row-reverse; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart__line { transition: none; will-change: auto; }
+}
+

@@ -1,0 +1,74 @@
+/* Shared UI Components */
+
+/* ---------- 1. Vial ---------- */
+.vial { display: grid; justify-items: center; }
+.vial__cap { width: 26px; height: 32px; background: var(--gold); }
+.vial__neck { width: 15px; height: 20px; background: color-mix(in oklch, var(--linen) 24%, var(--obsidian)); }
+.vial__body {
+  width: 82px; height: 196px;
+  border: var(--hairline) solid var(--gold);
+  border-radius: var(--radius-vial);
+  background: linear-gradient(to top,
+    color-mix(in oklch, var(--gold) 30%, transparent) 0 46%,
+    color-mix(in oklch, var(--gold) 4%, transparent) 46% 100%);
+  box-shadow: var(--shadow-vial);
+}
+.vial--lg .vial__cap { width: 44px; height: 54px; }
+.vial--lg .vial__neck { width: 26px; height: 34px; }
+.vial--lg .vial__body { width: 148px; height: 330px; border-radius: var(--radius-bottle); box-shadow: var(--shadow-bottle); }
+.vial--sm .vial__cap { width: 15px; height: 18px; }
+.vial--sm .vial__neck { width: 9px; height: 11px; }
+.vial--sm .vial__body { width: 44px; height: 100px; }
+
+/* ---------- 2. Six Card (Product list item) ---------- */
+.six__card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--s-5);
+  padding: var(--s-7) var(--s-6) var(--s-6);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+.six__card:hover { background: var(--surface); }
+.six__card:hover .six__name { color: var(--gold-ink); }
+.six__index { font-family: var(--font-mono); font-size: var(--t-micro); letter-spacing: var(--ls-label); color: var(--muted); }
+.six__name {
+  margin-top: var(--s-5);
+  font-family: var(--font-display);
+  font-size: var(--t-d3);
+  line-height: var(--lh-title);
+  transition: color var(--dur-2) var(--ease-out);
+}
+.six__spec { display: grid; gap: var(--s-2); margin-top: var(--s-4); font-size: var(--t-small); color: var(--muted); }
+.six__spec b { font-weight: var(--w-body-regular); color: var(--fg); }
+.six__foot {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4);
+  padding-top: var(--s-4); border-top: var(--line-light);
+}
+.six__price { font-family: var(--font-mono); font-size: var(--t-body); color: var(--gold-ink); }
+
+/* ---------- 3. Gold Button ---------- */
+.btn-gold {
+  display: inline-block;
+  padding: var(--s-4) var(--s-7);
+  background: var(--gold-edge); color: var(--linen);
+  border: var(--hairline) solid var(--gold-edge);
+  font-size: var(--t-micro); font-weight: var(--w-body-semi); letter-spacing: var(--ls-label); text-transform: uppercase; text-align: center;
+  transition: background-color var(--dur-2) var(--ease-out),
+              color var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out);
+}
+.btn-gold:hover:not([disabled]) { background: transparent; color: var(--gold-ink); border-color: var(--gold-ink); }
+.btn-gold[disabled] { background: transparent; color: var(--muted-inv); border-color: var(--border-inv); cursor: not-allowed; }
+
+/* ---------- 4. Perf Bar ---------- */
+.perf { display: grid; gap: var(--s-8); }
+.perf__row { display: grid; grid-template-columns: 190px minmax(0, 1fr) 120px; gap: var(--s-6); align-items: center; }
+.perf__label { display: grid; gap: var(--s-1); }
+.perf__label strong { font-weight: var(--w-body-medium); }
+.perf__label span { font-size: var(--t-small); color: var(--muted); }
+.perf__scale { position: relative; height: 32px; border-bottom: var(--line-light); }
+.perf__scale i { position: absolute; bottom: 0; width: var(--hairline); height: 9px; background: var(--rule-strong); }
+.perf__bar { position: absolute; left: 0; bottom: 0; height: 10px; width: calc(var(--v) * 1%); background: var(--gold-ink); transition: width var(--dur-3) var(--ease-out); }
+.perf__val { font-family: var(--font-mono); font-size: var(--t-body); text-align: right; transition: color var(--dur-2) var(--ease-out); }
+.perf__val small { display: block; font-family: var(--font-body); font-size: var(--t-micro); color: var(--muted); }
+.perf__axis { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--t-micro); color: var(--muted); }

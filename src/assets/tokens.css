@@ -1,0 +1,117 @@
+/* NAḎḎ Attars — design tokens
+   Single source of truth. No color literal outside this file. */
+
+:root {
+  /* ---- Palette (registered, six only) ---- */
+  --linen:            #f5f3ef;  /* background  */
+  --obsidian:         #0b0b0c;  /* foreground  */
+  --gold:             #d4af37;  /* accent      */
+  --gold-ink:         #82660a;  /* text on linen / linen-soft, 4.5:1+ */
+  --gold-edge:        #a6810c;  /* UI boundaries on light grounds, 3:1+ */
+  --linen-soft:       #ede9e1;  /* surface     */
+  --muted-on-linen:   #6b675e;  /* muted       */
+  --line-dark:        #222225;  /* border      */
+
+  /* ---- Semantic aliases ---- */
+  --bg:       var(--linen);
+  --surface:  var(--linen-soft);
+  --fg:       var(--obsidian);
+  --muted:    var(--muted-on-linen);
+  --border:   var(--line-dark);
+  --accent:   var(--gold);
+
+  /* Inverted ground: nav, hero, marquee, sticky bar, footer */
+  --bg-inv:      var(--obsidian);
+  --fg-inv:      var(--linen);
+  --muted-inv:   color-mix(in oklch, var(--linen) 52%, var(--obsidian));
+  --border-inv:  var(--line-dark);
+
+  /* Hairline on light ground */
+  --rule:        color-mix(in oklch, var(--obsidian) 14%, var(--linen));
+  --rule-strong: color-mix(in oklch, var(--obsidian) 28%, var(--linen));
+
+  /* ---- Type ---- */
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-body:    var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --w-display-regular: 400;
+  --w-display-medium:  500;
+  --w-display-semi:    600;
+  --w-body-light:      300;
+  --w-body-regular:    400;
+  --w-body-medium:     500;
+  --w-body-semi:       600;
+
+  /* Type scale — display (Cormorant Garamond) */
+  --t-d1: clamp(3.25rem, 6.4vw, 5.75rem);
+  --t-d2: clamp(2.5rem, 4.4vw, 3.75rem);
+  --t-d3: clamp(1.875rem, 2.9vw, 2.5rem);
+  --t-d4: clamp(1.5rem, 2.1vw, 1.75rem);
+
+  /* Type scale — body (Plus Jakarta Sans) */
+  --t-lead:  clamp(1.0625rem, 1.15vw, 1.1875rem);
+  --t-body:  0.9375rem;
+  --t-small: 0.8125rem;
+  --t-micro: 0.6875rem;
+
+  --lh-display: 1.04;
+  --lh-title:   1.16;
+  --lh-body:    1.62;
+  --lh-tight:   1.32;
+
+  --ls-display: -0.015em;
+  --ls-body:     0em;
+  --ls-eyebrow:  0.18em;
+  --ls-label:    0.09em;
+
+  /* ---- Geometry — square by rule ---- */
+  --radius:        0;
+  --radius-vial:   2px 2px 10px 10px;
+  --radius-bottle: 4px 4px 14px 14px;
+  --radius-dot:    50%;
+
+  --hairline: 1px;
+  --line:       var(--hairline) solid var(--border);
+  --line-light: var(--hairline) solid var(--rule);
+  --line-inv:   var(--hairline) solid var(--border-inv);
+
+  /* ---- Layout ---- */
+  --wrap: 1360px;
+  --flank: 56px;
+  --flank-sm: 24px;
+  --grid-cols: 6;
+  --grid-gap: var(--hairline);   /* the gap IS the border */
+
+  --rhythm: 120px;
+  --rhythm-tight: 80px;
+  --rhythm-mobile: 74px;
+
+  --nav-h: 68px;
+  --sticky-h: 72px;
+
+  /* ---- Space scale (4px base) ---- */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 24px;  --s-6: 32px;  --s-7: 40px;  --s-8: 56px;
+  --s-9: 72px;  --s-10: 96px;
+
+  /* ---- Shadow — three only, tinted, attached to physical objects ---- */
+  --shadow-vial:   0 10px 24px -14px color-mix(in oklch, var(--obsidian) 55%, transparent);
+  --shadow-bottle: 0 24px 60px -28px color-mix(in oklch, var(--obsidian) 62%, transparent);
+  --shadow-lift:   0 2px 0 0 color-mix(in oklch, var(--gold) 38%, transparent);
+
+  /* ---- Motion — long eases, no overshoot ---- */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in:    cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-mask:  cubic-bezier(0.16, 1, 0.30, 1);
+
+  --dur-1: 240ms;
+  --dur-2: 480ms;
+  --dur-3: 900ms;
+  --dur-4: 1400ms;
+
+  --z-nav: 60;
+  --z-sticky: 50;
+  --z-overlay: 80;
+}
