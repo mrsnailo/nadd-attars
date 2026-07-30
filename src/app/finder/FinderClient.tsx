@@ -35,7 +35,7 @@ function getPhrase(val: number, low: string, high: string) {
   return WORDS[band] + " " + (band < 3 ? low : high);
 }
 
-export default function FinderClient({ products }: { products: any[] }) {
+export default function FinderClient({ products }: { products: import('@prisma/client').Prisma.ProductGetPayload<{ include: { images: true, notes: true } }>[] }) {
   const [axes, setAxes] = useState({ w: 50, x: 50, y: 50, z: 50 });
   const listRef = useRef<HTMLUListElement>(null);
   
@@ -227,12 +227,12 @@ export default function FinderClient({ products }: { products: any[] }) {
                     <div className="match__data" style={{ display: 'grid', gap: 'var(--s-5)', alignContent: 'start', flex: 1 }}>
                       <div className="six__spec" style={{ display: 'grid', gap: 'var(--s-2)', fontSize: 'var(--t-small)', color: 'var(--muted)' }}>
                         <span>Family · <b style={{ fontWeight: 'var(--w-body-regular)', color: 'var(--fg)' }}>{p.family}</b></span>
-                        {p.notes && p.notes.length > 0 && <span>Base · <b style={{ fontWeight: 'var(--w-body-regular)', color: 'var(--fg)' }}>{p.notes.map((n: any) => n.ingredient).join(', ')}</b></span>}
+                        {p.notes && p.notes.length > 0 && <span>Base · <b style={{ fontWeight: 'var(--w-body-regular)', color: 'var(--fg)' }}>{p.notes.map((n: import('@prisma/client').ProductNotes) => n.notes).join(', ')}</b></span>}
                       </div>
                       <div className="six__foot" style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 'var(--s-4)' }}>
                         <span className="label">3 ml vial</span>
                         <div style={{ display: 'flex', gap: '16px', alignItems: 'baseline' }}>
-                          <span className="six__price">{p.currency} {p.price}</span>
+                          <span className="six__price">{p.currency} {Number(p.price)}</span>
                           <Link className="link-under" href={`/product/${p.slug}`}>View Dossier</Link>
                         </div>
                       </div>
